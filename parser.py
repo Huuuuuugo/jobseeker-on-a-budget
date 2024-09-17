@@ -83,7 +83,7 @@ with open('temp.html') as file:
                     final_file[-1] += "</text>"
 
                 prev_y = float(re.findall(r" y=\"(.+?)\"", line)[0])
-                line = line.rstrip("</text>")
+                line = line.replace("</text>", '')
                 final_file.append(line)
                 first_match = False
             
