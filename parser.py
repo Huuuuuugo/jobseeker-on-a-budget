@@ -1,12 +1,61 @@
 import re
 
-first_match = True # indicates the first match on a chain of matches
-prev_attr_str = ""
-final_file = []
 
+# create temp file with the cirles moved to the beggining of the paragraph
 with open('index.html') as file:
+    temp_file = []
+    last_text_index = 0
+    first_match = True # indicates the first match on a chain of matches
+    prev_attr_str = ""
+    prev_y = 0
+    for line in file:
+        if re.match(r"^.*<text.*?</text>$", line):
+            # get variables
+            fill: str = re.findall(r" fill=\"(.+?)\"", line)[0]
+            text: str = re.findall(r"^.*<text.*>(.+)</text>$", line)[0]
+            y = re.findall(r" y=\"(.+?)\"", line)[0]
+
+            # get attribute string
+            attr_str: str = re.findall(r"^.*<text(.*)>.+</text>$", line)[0]
+            attr_str_x: str = re.findall(r"^.*<text.*( x=\".*?\").*>.+</text>$", line)[0]
+            attr_str_y: str = re.findall(r"^.*<text.*( y=\".*?\").*>.+</text>$", line)[0]
+            attr_str_font_weight: str = re.findall(r"^.*<text.*( font-weight=\".*?\").*>.+</text>$", line)[0]
+
+            if fill == "black":
+                attr_str = attr_str.replace(attr_str_x, '').replace(attr_str_y, '').replace(attr_str_font_weight, '')
+
+            else:
+               attr_str = attr_str.replace(attr_str_x, '').replace(attr_str_y, '')
+
+            if first_match or attr_str != prev_attr_str or y > prev_y:
+                prev_y = y
+                first_match = False
+                last_text_index = len(temp_file)
+
+            prev_attr_str = attr_str
+
+        else:
+            first_match = True
+
+        if re.match(r"^.*<circle.*?</circle>$", line) and re.findall(r" fill=\"(.+?)\"", line)[0] == "black":
+            temp_file.insert(last_text_index, line)
+            continue
+
+        temp_file.append(line)
+
+with open('temp.html', 'w') as file:
+    for line in temp_file:
+        file.write(line)
+
+with open('temp.html') as file:
+    final_file = []
+    first_match = True # indicates the first match on a chain of matches
+    prev_attr_str = ""
+
     for line in file:
         line = line.rstrip('\n')
+        # print(line)
+        # input()
 
         # search for text elements
         if re.match(r"^.*<text.*?</text>$", line):
@@ -42,11 +91,7 @@ with open('index.html') as file:
             else:
                 y = float(re.findall(r" y=\"(.+?)\"", line)[0])
 
-                # add newline char if y value goes down
                 line = re.findall(r"^.*<text.*>(.+)</text>$", line)[0]
-
-                if prev_y < y:
-                    line = f'<tspan font-weight="normal" x={x} dy="1.2em">{line}</tspan>'
 
                 if font_wight == "bold":
                     line = f'<tspan font-weight="bold">{line}</tspan>'
