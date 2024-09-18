@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.cdnfonts.com/css/liberation-sans" rel="stylesheet">
     <title>Document</title>
 </head>
-<body>
+<body style="margin: 0;">
     <!-- svg element goes here -->
+    <script>
+        // map 'Liberation Sans' to 'LiberationSans'
+        document.querySelectorAll('[font-family="LiberationSans"]').forEach((element) => {
+        element.style.fontFamily = "Liberation Sans"
+        })
+    </script>
 </body>
 </html>
