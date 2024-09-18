@@ -1,3 +1,4 @@
+import os
 import re
 
 
@@ -51,11 +52,11 @@ with open('index.html') as file:
 
         temp_file.append(line)
 
-with open('temp.html', 'w') as file:
+with open('.temp.html', 'w') as file:
     for line in temp_file:
         file.write(line)
 
-with open('temp.html') as file:
+with open('.temp.html') as file:
     final_file = []
     first_match = True # indicates the first match on a chain of matches
     prev_attr_str = ""
@@ -139,3 +140,5 @@ with open('temp.html') as file:
 with open('output.html', 'w') as file:
     for line in final_file:
         file.write(line + '\n')
+
+os.remove(".temp.html")
