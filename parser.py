@@ -53,7 +53,7 @@ with open('input.html') as file:
         temp_file.append(line)
 
 with open('index.html', 'r') as file:
-    index_beg, index_end = file.read().split('<!-- svg element goes here -->')
+    index_beg, index_end = file.read().split('<!-- split -->')
 
 with open('.temp.html', 'w') as file:
     file.write(index_beg)
