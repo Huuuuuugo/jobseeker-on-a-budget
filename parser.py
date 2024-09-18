@@ -3,7 +3,7 @@ import re
 
 
 # create temp file with the cirles moved to the beggining of the paragraph
-with open('index.html') as file:
+with open('input.html') as file:
     temp_file = []
     last_text_index = 0
     first_match = True # indicates the first match on a chain of matches
@@ -52,9 +52,16 @@ with open('index.html') as file:
 
         temp_file.append(line)
 
+with open('index.html', 'r') as file:
+    index_beg, index_end = file.read().split('<!-- svg element goes here -->')
+
 with open('.temp.html', 'w') as file:
+    file.write(index_beg)
+
     for line in temp_file:
         file.write(line)
+        
+    file.write(index_end)
 
 with open('.temp.html') as file:
     final_file = []
