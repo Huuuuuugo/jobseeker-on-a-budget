@@ -43,8 +43,14 @@ with open('input.html') as file:
 
         else:
             first_match = True
+        
+        # changes the first rect element to path element
+        # this allows the white background to be properly displayed when printing on firefox
+        if '<rect fill="white" height="100%" width="100%"></rect>' in line:
+            line = '    <path fill="white" d="M 0,0 L 100,0 L 100,100 L 0,100 Z" />\n'
 
         # search for circle elements with black color
+        # this repositions the black circles of bullet point lists to above the last text line to fix text misalignment
         if re.match(r"^.*<circle.*?</circle>$", line) and re.findall(r" fill=\"(.+?)\"", line)[0] == "black":
             # move the element to right above the last text line
             temp_file.insert(last_text_index, line)
@@ -53,7 +59,7 @@ with open('input.html') as file:
         temp_file.append(line)
 
 with open('index.html', 'r') as file:
-    index_beg, index_end = file.read().split('<!-- svg element goes here -->')
+    index_beg, index_end = file.read().split('<!-- split -->')
 
 with open('.temp.html', 'w') as file:
     file.write(index_beg)
