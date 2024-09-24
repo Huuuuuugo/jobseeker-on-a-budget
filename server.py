@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import FileResponse
 import subprocess
 
 
@@ -31,3 +32,7 @@ async def parse(request: Request):
         output = file.read()
     
     return HTMLResponse(output)
+
+@app.get("/")
+async def show_file(request: Request):
+    return FileResponse('output.html')
