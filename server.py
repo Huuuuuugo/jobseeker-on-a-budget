@@ -23,7 +23,7 @@ async def parse(request: Request):
     html_string = html_content.decode("utf-8")
 
     with open('input.html', 'w') as file:
-        file.write(html_string.replace('\n', ''))
+        file.write(html_string)
 
     subprocess.run(["python", "parser.py"])
 
