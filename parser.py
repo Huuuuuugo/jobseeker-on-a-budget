@@ -152,7 +152,7 @@ def parse(input_file: str, output_file: str):
                 final_file.append(line)
 
     # save output
-    with open('output.html', 'w') as file:
+    with open(output_file, 'w') as file:
         for line in final_file:
             file.write(line + '\n')
 
