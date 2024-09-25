@@ -1,9 +1,14 @@
+from tempfile import NamedTemporaryFile
+import asyncio
+import os
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import FileResponse
-import subprocess
 
+from parser import parse
 
 app = FastAPI()
 app.add_middleware(
@@ -14,25 +19,36 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-#TODO: add temp directories
+async def delete_file(file: str, delay: int = 5):
+    await asyncio.sleep(delay)
+    os.remove(file)
+
 @app.post("/")
-async def parse(request: Request):
+async def parse_html(request: Request):
     # get html
     html_content = await request.body()
 
     # decode html
     html_string = html_content.decode("utf-8")
 
-    with open('input.html', 'w') as file:
-        file.write(html_string)
+    with NamedTemporaryFile(suffix='.html', dir='', mode='w+', delete=False) as input_file:
+        input_file.write(html_string)
 
-    subprocess.run(["python", "parser.py"])
-
-    with open("output.html", 'r') as file:
-        output = file.read()
+    with NamedTemporaryFile(prefix='output_', suffix='.html', dir='', mode='w+', delete=False) as output_file:
+        parse(input_file.name, output_file.name)
     
-    return HTMLResponse(output)
+    os.remove(input_file.name)
+    
+    asyncio.create_task(delete_file(output_file.name, 5))
 
-@app.get("/")
-async def show_file(request: Request):
-    return FileResponse('output.html')
+    file_name_index = max(output_file.name.rfind('\\') + 1, output_file.name.rfind('/') + 1)
+    file_name = output_file.name[file_name_index:]
+
+    return HTMLResponse(file_name)
+
+@app.get("/{file_name}")
+async def show_file(file_name: str):
+    if 'output_' not in file_name:
+        raise HTTPException(status_code=400, detail="Invalid request!")
+
+    return FileResponse(file_name)
