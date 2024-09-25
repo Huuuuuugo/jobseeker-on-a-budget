@@ -1,23 +1,10 @@
-function openNewWindow(html) {
-    const newWindow = window.open(); // Open a new window
-    if (newWindow) {
-        newWindow.document.write(html); // Write the HTML content
-        newWindow.document.close(); // Close the document to render it
-        newWindow.onload = function() {
-            newWindow.print()
-        }
-    } else {
-        console.error("Failed to open new window.")
-    }
-}
+const API_LINK = 'https://svg-parser.onrender.com'
 
 function requestParser() {
     cvElement = document.querySelector('div[style="position:relative"]')
     cvHtml = cvElement.outerHTML
 
-    let outputHtml = ''
-
-    fetch('https://svg-parser.onrender.com',
+    fetch(API_LINK,
         {
         method: 'POST',
         headers: {
@@ -26,9 +13,13 @@ function requestParser() {
         body: cvHtml
     })
     .then(response => response.text())
-    .then(responseHtml => {
-        outputHtml = responseHtml
-        openNewWindow(outputHtml)
+    .then(file_name => {
+        const newWindow = window.open(`${API_LINK}/${file_name}`, '_blank')
+        if (newWindow) {
+            newWindow.onload = function() {
+                newWindow.print()
+            }
+        }
     })
 }
 
