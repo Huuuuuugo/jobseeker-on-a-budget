@@ -14,12 +14,7 @@ function requestParser() {
     })
     .then(response => response.text())
     .then(file_name => {
-        const newWindow = window.open(`${API_LINK}/${file_name}`, '_blank')
-        if (newWindow) {
-            newWindow.onload = function() {
-                newWindow.print()
-            }
-        }
+        window.open(`${API_LINK}/${file_name}`, '_blank')
     })
 }
 
