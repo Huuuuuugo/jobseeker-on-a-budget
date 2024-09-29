@@ -1,2 +1,10 @@
 __pycache__/
 venv/
+
+web-ext-artifacts/
+.amo-upload-uuid
+.web-extension-id
+
+*.pem
+commands.txt
+output*.html
