@@ -1,15 +1,28 @@
 {
-    "name": "SVG Parser",
-    "version": "1.0",
-    "manifest_version": 3,
+    "name": "Jobseeker on a Budget",
+    "version": "1.1",
+    "manifest_version": 2,
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{50fc9434-ffbf-45f6-bd0d-4ed6bfd80f3b}"
+      }
+    },
     "permissions": [
-        "activeTab",
-        "storage"
+      "declarativeNetRequest", 
+      "declarativeNetRequestWithHostAccess",
+      "activeTab",
+      "storage",
+      "https://svg-parser.onrender.com/*",
+      "https://www.jobseeker.com/*"  
     ],
     "content_scripts": [
-    {
-      "matches": ["https://www.jobseeker.com/*"],
-      "js": ["content.js"]
+      {
+        "matches": ["https://www.jobseeker.com/*"],
+        "js": ["content.js"]
+      }
+    ],
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
     }
-  ]
 }
