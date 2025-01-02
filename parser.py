@@ -22,7 +22,12 @@ def parse(input_file: str, output_file: str):
                 attr_str: str = re.findall(r"^.*<text(.*)>.+</text>$", line)[0]
                 attr_str_x: str = re.findall(r"^.*<text.*( x=\".*?\").*>.+</text>$", line)[0]
                 attr_str_y: str = re.findall(r"^.*<text.*( y=\".*?\").*>.+</text>$", line)[0]
-                attr_str_font_weight: str = re.findall(r"^.*<text.*( font-weight=\".*?\").*>.+</text>$", line)[0]
+                attr_str_font_weight_match: str = re.findall(r"^.*<text.*( font-weight=\".*?\").*>.+</text>$", line)
+                print(attr_str_font_weight_match)
+                if attr_str_font_weight_match:
+                    attr_str_font_weight = attr_str_font_weight_match[0]
+                else:
+                    attr_str_font_weight = ' font-weight="normal"'
                 
                 # filter out the attributes that must be ignored
                 if fill == "black":
@@ -83,14 +88,22 @@ def parse(input_file: str, output_file: str):
             if re.match(r"^.*<text.*?</text>$", line):
                 # get relevant attributes
                 fill = re.findall(r" fill=\"(.+?)\"", line)[0]
-                font_wight = re.findall(r" font-weight=\"(.+?)\"", line)[0]
+                font_weight_match = re.findall(r" font-weight=\"(.+?)\"", line)
+                if font_weight_match:
+                    font_wight = font_weight_match[0]
+                else:
+                    font_wight = 'normal'
                 x = float(re.findall(r" x=\"(.+?)\"", line)[0])
 
                 # get attribute string
                 attr_str: str = re.findall(r"^.*<text(.*)>.+</text>$", line)[0]
                 attr_str_x: str = re.findall(r"^.*<text.*( x=\".*?\").*>.+</text>$", line)[0]
                 attr_str_y: str = re.findall(r"^.*<text.*( y=\".*?\").*>.+</text>$", line)[0]
-                attr_str_font_weight: str = re.findall(r"^.*<text.*( font-weight=\".*?\").*>.+</text>$", line)[0]
+                attr_str_font_weight_match: str = re.findall(r"^.*<text.*( font-weight=\".*?\").*>.+</text>$", line)
+                if attr_str_font_weight_match:
+                    attr_str_font_weight = attr_str_font_weight_match[0]
+                else:
+                    attr_str_font_weight = ' font-weight="normal"'
 
                 # filter out the attributes that must be ignored
                 # filtering font-weight out only when the text color is black will prevent some unintended things from being applied on topic sections
@@ -157,4 +170,4 @@ def parse(input_file: str, output_file: str):
             file.write(line + '\n')
 
 if __name__ == "__main__":
-    parse('input.html', 'output.py')
+    parse('input.html', 'output.html')
